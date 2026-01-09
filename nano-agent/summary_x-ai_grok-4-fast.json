@@ -1,0 +1,5 @@
+{
+  "model": "x-ai/grok-4-fast",
+  "hook_names": ["PreToolUse", "PostToolUse", "Notification", "Stop", "SubagentStop", "UserPromptSubmit"],
+  "test_status": "completed"
+}

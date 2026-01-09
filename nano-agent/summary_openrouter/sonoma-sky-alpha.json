@@ -1,0 +1,5 @@
+{
+  "model": "openrouter/sonoma-sky-alpha",
+  "hook_names": ["PreToolUse", "PostToolUse", "Notification", "Stop", "SubagentStop", "PreCompact", "UserPromptSubmit", "SessionStart"],
+  "test_status": "completed"
+}

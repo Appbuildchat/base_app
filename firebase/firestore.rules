@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  function isAuthenticated() {
+    return request.auth.uid != null;
+  }
+  
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
+  
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if true;  // Allows the email query to work
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update, delete: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Other collections can go here
+    match /{document=**} {
+      allow read, write: if request.auth.uid != null;
+    }
+  }
+}

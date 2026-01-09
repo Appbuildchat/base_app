@@ -1,0 +1,170 @@
+"# Product Requirements Document (PRD)
+
+---
+
+## 1. Business & Product Overview
+
+### Business Idea Summary
+This mobile app motivates adults and college students to improve their health through daily walking. It tracks users’ steps using smartphone sensors, calculates calorie burn based on personal data and scientific formulas, and rewards users with points for reaching step milestones. Points can be redeemed for healthy products (e.g., vitamins, supplements) curated and managed by administrators. The app features a premium, dark-themed design for a luxurious user experience.
+
+### Problem & Solution
+**Problem:**  
+Many people struggle to maintain consistent physical activity and make healthy lifestyle choices due to lack of motivation and accessible, trustworthy rewards.
+
+**Solution:**  
+The app incentivizes daily walking by awarding points for step milestones, which can be redeemed for high-quality, nutritionist-approved products. This unique approach combines health management with tangible, non-monetary rewards, encouraging users to build lasting healthy habits.
+
+### Target Audience
+- Adults and college students seeking to improve their health and fitness.
+- Users motivated by tangible rewards and interested in nutrition and wellness.
+- Individuals who prefer a premium, visually comfortable app experience.
+
+**Pain Points:**
+- Difficulty staying motivated to walk regularly.
+- Lack of trustworthy, accessible healthy rewards.
+- Desire for accurate, science-based health tracking.
+
+### Unique Value Proposition
+- Users can only earn rewards by walking—products cannot be purchased with money, only with points earned from physical activity.
+- All products are curated and verified by a food science and nutrition expert, ensuring quality and reliability.
+- The app features a luxurious, dark-themed design for a comfortable and premium user experience.
+
+---
+
+## 2. Core App Features
+
+### Core App Features
+
+1. **Step Tracking & Milestone Rewards**
+   - Tracks steps using smartphone sensors (no external device integration).
+   - Progress bar with milestone boxes at 1, 5,000, 10,000, 15,000, and 20,000 steps (daily max: 20,000).
+   - Milestone boxes activate as users reach each step count; tapping an activated box awards a random number of points (1–50).
+   - Calorie burn calculated in real time based on user profile (height, weight, gender, age) and walking data.
+   - Encouraging messages displayed after milestone achievements and daily goal completion.
+
+2. **Walking History & Statistics**
+   - Line graph showing daily steps for the current month.
+   - Calorie burn displayed for each day.
+   - Sharing feature for today’s calorie burn (share to social or via message).
+
+3. **Admin-Managed Rewards Store**
+   - Only administrators can add and manage products (e.g., vitamins, supplements, healthy foods).
+   - Users can browse available products, view detailed nutritional information and consumption tips, and redeem points to purchase.
+   - No cash purchases; products can only be redeemed with points.
+
+4. **User Account & Points Management**
+   - Users can view their total points balance.
+   - Users can access a purchase history of redeemed products.
+
+### Potential Future Features (Not in MVP)
+- Friend competitions and group challenges.
+- Streak bonuses and additional point-earning mechanisms.
+- Google Ads integration for monetization.
+- Advanced social sharing and community features.
+- Personalized recommendations based on user activity.
+- Push notifications for reminders and encouragement.
+- More detailed analytics and health insights.
+
+---
+
+## 3. Screen Breakdown & User Flow
+
+### 1) Home / Dashboard Screen
+- **Displays:**
+  - Today’s step count and progress bar with milestone boxes (1, 5,000, 10,000, 15,000, 20,000).
+  - Calorie burn for today.
+  - Encouraging message (dynamic, based on progress).
+  - Quick access to milestone rewards (tap to claim points).
+- **Actions:**
+  - Tap milestone boxes to claim points (if activated).
+  - Navigate to walking history/statistics, rewards store, or user profile.
+
+### 2) Walking History & Statistics Screen
+- **Displays:**
+  - Line graph of daily steps for the current month.
+  - Calorie burn for each day (displayed on graph or as a list).
+  - Option to share today’s calorie burn (share button).
+- **Actions:**
+  - Tap on a day to view detailed stats.
+  - Tap share button to share today’s calorie burn via supported channels.
+
+### 3) Rewards Store Screen
+- **Displays:**
+  - List/grid of available products (with images).
+  - Product details: name, description, nutritional info, consumption tips, point cost.
+  - User’s current points balance.
+- **Actions:**
+  - Tap product to view details.
+  - Redeem product using points (with confirmation dialog).
+
+### 4) User Profile & Points Screen
+- **Displays:**
+  - User’s profile information (name, age, height, weight, gender).
+  - Total points balance.
+  - Purchase history (list of redeemed products with dates).
+- **Actions:**
+  - Edit profile information.
+  - View and filter purchase history.
+
+### 5) Admin Panel (Admin Only)
+- **Displays:**
+  - Product management interface (add, edit, delete products).
+  - List of all products with details.
+- **Actions:**
+  - Add new product (image, name, description, nutritional info, tips, point cost).
+  - Edit or remove existing products.
+
+---
+
+## 4. User Flow & Experience
+
+### 1. Onboarding
+- User downloads app and creates an account (basic info: name, age, height, weight, gender).
+- App requests permission to access motion/step data from smartphone sensors.
+- User is introduced to the app’s core features via a brief walkthrough.
+
+### 2. Primary Actions
+- User walks throughout the day; app tracks steps in real time.
+- As user reaches each milestone, the corresponding box on the progress bar activates.
+- User taps activated milestone boxes to claim random points (1–50).
+- User views today’s step count, calorie burn, and encouraging messages on the dashboard.
+
+### 3. Transactions
+- User browses the rewards store to view available products.
+- User redeems points to purchase a product (confirmation required).
+- Points balance and purchase history are updated accordingly.
+
+### 4. Post-Interaction
+- User checks walking history and statistics (line graph for the month).
+- User shares today’s calorie burn via the sharing feature.
+- User receives motivational messages after milestones and daily goal completion.
+
+---
+
+## 5. Navigation & Role-Based Access
+
+### Navigation Flow
+- **Bottom navigation bar** (suggested) with tabs for:
+  - Home/Dashboard
+  - History/Statistics
+  - Rewards Store
+  - Profile/Points
+
+- **Screen transitions:**
+  - Home → History/Statistics (view progress)
+  - Home → Rewards Store (redeem points)
+  - Home → Profile/Points (manage account)
+  - (Admin only) Profile → Admin Panel (manage products)
+
+### Role-Based Access
+- **Regular Users:**
+  - Access to all user-facing screens: Home, History, Rewards Store, Profile.
+  - Can view and redeem products, but cannot add/edit products.
+- **Administrators:**
+  - All regular user access.
+  - Additional access to Admin Panel for product management (add, edit, delete products).
+
+---
+
+**Does this document fully capture your vision for the product?**  
+If any critical details are missing or need adjustment, please let me know before proceeding!"

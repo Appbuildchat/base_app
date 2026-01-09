@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Comprehensive Firebase Security Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; line-height: 1.6; }
+    h1 { color: #333; }
+    p { color: #555; }
+    pre { background-color: #f4f4f4; padding: 1em; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body>
+  <h1>Comprehensive Firebase Security Test</h1>
+  <p>Open the developer console (press F12) to see the audit results.</p>
+  <p>This script will test for the following vulnerabilities:</p>
+  <ul>
+    <li>Anonymous Write to a Test Collection</li>
+    <li>Anonymous Read from a Test Collection</li>
+    <li>Listing All Documents in the 'users' Collection</li>
+    <li>Modifying Another User's Document</li>
+    <li>Deleting Another User's Document</li>
+  </ul>
+
+  <script type="module">
+    // Import all necessary Firestore functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // =================================================================================
+    // 1. PASTE YOUR FIREBASE WEB CONFIGURATION HERE
+    // =================================================================================
+    const firebaseConfig = {
+      apiKey: 'AIzaSyB6xZ14ClFl4LhHtI6PAU_nsV0ZRLTw-8o',
+      appId: '1:1093996912048:web:882a8e0ace1869f6484a75',
+      messagingSenderId: '1093996912048',
+      projectId: 'red-alix-albi--abc',
+      authDomain: 'red-alix-albi--abc.firebaseapp.com',
+      storageBucket: 'red-alix-albi--abc.firebasestorage.app',
+    };
+
+    // =================================================================================
+    // 2. CONFIGURE YOUR TEST PARAMETERS HERE
+    // =================================================================================
+    // The ID of a user document you want to try to modify/delete.
+    // Use an ID that exists in your 'users' collection.
+    const TARGET_USER_ID = 'Y6OJ2EzoekNhynK0K2EaV09rYBq2';
+
+    // =================================================================================
+    // TEST SUITE
+    // =================================================================================
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function runSecurityAudit() {
+      console.log("%c--- STARTING FIREBASE SECURITY AUDIT ---", "color: blue; font-size: 16px; font-weight: bold;");
+
+      await testPublicWrite();
+      await testPublicRead();
+      await testListAllUsers();
+      await testModifyAnotherUser();
+      await testDeleteAnotherUser();
+
+      console.log("%c--- FIREBASE SECURITY AUDIT COMPLETE ---", "color: blue; font-size: 16px; font-weight: bold;");
+    }
+
+    // TEST 1: Can anyone write to a random collection?
+    async function testPublicWrite() {
+      console.log("\n[TEST 1] Attempting anonymous write...");
+      try {
+        const testDocRef = doc(db, "securityAudit", "writeTest");
+        await setDoc(testDocRef, { status: "vulnerable", timestamp: new Date() });
+        console.error("🔥 VULNERABILITY: Anonymous write was successful.");
+      } catch (error) {
+        console.log("🛡️ SECURE: Anonymous write was blocked as expected.", error.message);
+      }
+    }
+
+    // TEST 2: Can anyone read from a random collection?
+    async function testPublicRead() {
+      console.log("\n[TEST 2] Attempting anonymous read...");
+      try {
+        const testDocRef = doc(db, "securityAudit", "writeTest");
+        await getDoc(testDocRef);
+        console.error("🔥 VULNERABILITY: Anonymous read was successful.");
+      } catch (error) {
+        console.log("🛡️ SECURE: Anonymous read was blocked as expected.", error.message);
+      }
+    }
+
+    // TEST 3: Can anyone list all documents in the 'users' collection?
+    async function testListAllUsers() {
+      console.log("\n[TEST 3] Attempting to list all users...");
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        console.error(`🔥 VULNERABILITY: Successfully listed ${querySnapshot.size} documents from the 'users' collection.`);
+        querySnapshot.forEach(doc => console.log(`  - User ID: ${doc.id}`, doc.data()));
+      } catch (error) {
+        console.log("🛡️ SECURE: Listing users was blocked as expected.", error.message);
+      }
+    }
+
+    // TEST 4: Can anyone modify another user's document?
+    async function testModifyAnotherUser() {
+      console.log(`\n[TEST 4] Attempting to modify user: ${TARGET_USER_ID}...`);
+      try {
+        const userDocRef = doc(db, "users", TARGET_USER_ID);
+        await updateDoc(userDocRef, { wasHacked: true, modifiedAt: new Date() });
+        console.error(`🔥 VULNERABILITY: Successfully modified user ${TARGET_USER_ID}. Check the document in your database.`);
+      } catch (error) {
+        console.log(`🛡️ SECURE: Modifying another user was blocked as expected.`, error.message);
+      }
+    }
+
+    // TEST 5: Can anyone delete another user's document?
+    async function testDeleteAnotherUser() {
+      console.log(`\n[TEST 5] Attempting to delete user: ${TARGET_USER_ID}...`);
+      try {
+        const userDocRef = doc(db, "users", TARGET_USER_ID);
+        await deleteDoc(userDocRef);
+        console.error(`🔥 VULNERABILITY: Successfully deleted user ${TARGET_USER_ID}. Check your database.`);
+      } catch (error) {
+        console.log(`🛡️ SECURE: Deleting another user was blocked as expected.`, error.message);
+      }
+    }
+
+    // Run all tests
+    runSecurityAudit();
+  </script>
+</body>
+</html>

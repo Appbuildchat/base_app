@@ -1,0 +1,40 @@
+{
+    "primary": "#f63ce3",
+    "secondary": "#9265e6",
+    "accent": "#f44034",
+    "background": "#f5f8f9",
+    "text": "#222c39",
+    "palette_name": "Custom Palette",
+    "hsl_data": {
+        "primary": {
+            "hue": 306,
+            "saturation": 91,
+            "lightness": 60
+        },
+        "secondary": {
+            "hue": 261,
+            "saturation": 72,
+            "lightness": 65
+        },
+        "error": {
+            "hue": 4,
+            "saturation": 90,
+            "lightness": 58
+        },
+        "white": {
+            "hue": 204,
+            "saturation": 26,
+            "lightness": 97
+        },
+        "grey": {
+            "hue": 215,
+            "saturation": 14,
+            "lightness": 45
+        },
+        "black": {
+            "hue": 215,
+            "saturation": 25,
+            "lightness": 18
+        }
+    }
+}

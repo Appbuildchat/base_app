@@ -1,0 +1,14 @@
+{
+  "model": "google/gemini-2.5-flash",
+  "hook_names": [
+    "Notification",
+    "PostToolUse",
+    "PreCompact",
+    "PreToolUse",
+    "SessionStart",
+    "Stop",
+    "SubagentStop",
+    "UserPromptSubmit"
+  ],
+  "test_status": "completed"
+}

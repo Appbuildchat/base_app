@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "nano-agent": {
+      "command": "nano-agent",
+      "args": []
+    }
+  }
+}
