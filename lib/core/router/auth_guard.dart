@@ -5,18 +5,50 @@ import 'package:logger/logger.dart';
 import '../providers/role_provider.dart';
 
 class AuthGuard {
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static FirebaseAuth? _auth;
   static final RoleProvider _roleProvider = RoleProvider();
   static final Logger _logger = Logger();
+  static bool _firebaseInitialized = false;
+
+  /// Get FirebaseAuth instance safely
+  static FirebaseAuth? get _safeAuth {
+    if (!_firebaseInitialized) return null;
+    _auth ??= FirebaseAuth.instance;
+    return _auth;
+  }
+
+  /// Mark Firebase as initialized
+  static void setFirebaseInitialized(bool value) {
+    _firebaseInitialized = value;
+  }
+
+  /// Check if Firebase is ready
+  static bool get isFirebaseReady => _firebaseInitialized;
 
   /// Check if user is currently authenticated
-  static bool get isAuthenticated => _auth.currentUser != null;
+  static bool get isAuthenticated {
+    try {
+      return _safeAuth?.currentUser != null;
+    } catch (e) {
+      debugPrint('AuthGuard: Error checking auth state: $e');
+      return false;
+    }
+  }
 
   /// Get current user
-  static User? get currentUser => _auth.currentUser;
+  static User? get currentUser {
+    try {
+      return _safeAuth?.currentUser;
+    } catch (e) {
+      return null;
+    }
+  }
 
   /// Stream of authentication state changes
-  static Stream<User?> get authStateChanges => _auth.authStateChanges();
+  static Stream<User?> get authStateChanges {
+    if (_safeAuth == null) return const Stream.empty();
+    return _safeAuth!.authStateChanges();
+  }
 
   /// Check if user is authenticated and redirect accordingly
   static String? redirectLogic(String currentRoute) {
@@ -69,7 +101,7 @@ class AuthGuard {
   /// Handle sign out
   static Future<void> signOut() async {
     try {
-      await _auth.signOut();
+      await _safeAuth?.signOut();
       if (kDebugMode) {
         _logger.i('AuthGuard: User signed out successfully');
       }
@@ -82,11 +114,11 @@ class AuthGuard {
   }
 
   /// Check if the current user's email is verified
-  static bool get isEmailVerified => _auth.currentUser?.emailVerified ?? false;
+  static bool get isEmailVerified => _safeAuth?.currentUser?.emailVerified ?? false;
 
   /// Check if user has incomplete profile (for social sign-up users)
   static Future<bool> hasIncompleteProfile() async {
-    final user = _auth.currentUser;
+    final user = _safeAuth?.currentUser;
     if (user == null) return false;
 
     try {
@@ -120,7 +152,7 @@ class AuthGuard {
 
   /// Get user authentication state as a string for debugging
   static String get authStateDebug {
-    final user = _auth.currentUser;
+    final user = _safeAuth?.currentUser;
     if (user == null) return 'Not authenticated';
 
     return 'Authenticated: ${user.email} (verified: ${user.emailVerified})';
@@ -128,7 +160,7 @@ class AuthGuard {
 
   /// Get social data for incomplete profile redirect
   static Map<String, dynamic> getSocialDataForIncompleteProfile() {
-    final user = _auth.currentUser;
+    final user = _safeAuth?.currentUser;
     if (user == null) return {};
 
     // Detect the actual auth provider from Firebase providerData
@@ -162,8 +194,9 @@ class AuthGuard {
     _roleProvider.initialize();
 
     if (!kDebugMode) return;
+    if (_safeAuth == null) return;
 
-    _auth.authStateChanges().listen((User? user) {
+    _safeAuth!.authStateChanges().listen((User? user) {
       if (user == null) {
         _logger.d('AuthGuard: User signed out');
       } else {

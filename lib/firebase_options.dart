@@ -45,8 +45,9 @@ class DefaultFirebaseOptions {
   }
 
   // Placeholder values - will be replaced by flutterfire configure
+  // API key format: 39 chars starting with 'AIza' to pass Firebase validation
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
+    apiKey: 'AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZabc1234',
     appId: '1:000000000000:web:0000000000000000000000',
     messagingSenderId: '000000000000',
     projectId: 'placeholder-project',
@@ -55,7 +56,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
+    apiKey: 'AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZabc1234',
     appId: '1:000000000000:android:0000000000000000000000',
     messagingSenderId: '000000000000',
     projectId: 'placeholder-project',
@@ -63,7 +64,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
+    apiKey: 'AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZabc1234',
     appId: '1:000000000000:ios:0000000000000000000000',
     messagingSenderId: '000000000000',
     projectId: 'placeholder-project',
@@ -72,7 +73,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
+    apiKey: 'AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZabc1234',
     appId: '1:000000000000:ios:0000000000000000000000',
     messagingSenderId: '000000000000',
     projectId: 'placeholder-project',
@@ -81,7 +82,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
+    apiKey: 'AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZabc1234',
     appId: '1:000000000000:web:0000000000000000000000',
     messagingSenderId: '000000000000',
     projectId: 'placeholder-project',

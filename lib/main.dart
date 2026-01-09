@@ -18,20 +18,33 @@ void main() async {
   await FontLoader.loadFonts();
 
   // Initialize Firebase with proper options
+  bool firebaseInitialized = false;
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
-    // Initialize auth state listener for debugging
-    AuthGuard.initializeAuthListener();
-
-    // Initialize role provider to listen to auth changes
-    RoleProvider().initialize();
-    await NotificationInitializer.initialize();
+    firebaseInitialized = true;
+    AuthGuard.setFirebaseInitialized(true);
+    debugPrint('Firebase initialized successfully');
   } catch (e) {
     // Firebase not configured or error during initialization
+    AuthGuard.setFirebaseInitialized(false);
     debugPrint('Firebase initialization error: $e');
+    debugPrint('Running in offline mode - Firebase features disabled');
+  }
+
+  // Only initialize Firebase-dependent services if Firebase is ready
+  if (firebaseInitialized) {
+    try {
+      // Initialize auth state listener for debugging
+      AuthGuard.initializeAuthListener();
+
+      // Initialize role provider to listen to auth changes
+      RoleProvider().initialize();
+      await NotificationInitializer.initialize();
+    } catch (e) {
+      debugPrint('Firebase services initialization error: $e');
+    }
   }
 
   // Initialize animations
