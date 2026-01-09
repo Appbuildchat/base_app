@@ -190,17 +190,20 @@ class ResponsiveSpacing {
   // 반응형 간격 값들
   // mobile → tablet → desktop 순으로 증가
   double get xs => Responsive.value(_context, mobile: 4, tablet: 6, desktop: 8);
-  double get sm => Responsive.value(_context, mobile: 8, tablet: 12, desktop: 16);
-  double get md => Responsive.value(_context, mobile: 16, tablet: 20, desktop: 24);
-  double get lg => Responsive.value(_context, mobile: 24, tablet: 32, desktop: 40);
-  double get xl => Responsive.value(_context, mobile: 32, tablet: 48, desktop: 64);
-  double get xxl => Responsive.value(_context, mobile: 40, tablet: 56, desktop: 72);
+  double get sm =>
+      Responsive.value(_context, mobile: 8, tablet: 12, desktop: 16);
+  double get md =>
+      Responsive.value(_context, mobile: 16, tablet: 20, desktop: 24);
+  double get lg =>
+      Responsive.value(_context, mobile: 24, tablet: 32, desktop: 40);
+  double get xl =>
+      Responsive.value(_context, mobile: 32, tablet: 48, desktop: 64);
+  double get xxl =>
+      Responsive.value(_context, mobile: 40, tablet: 56, desktop: 72);
 
   // 페이지 패딩
-  EdgeInsets get pagePadding => EdgeInsets.symmetric(
-    horizontal: md,
-    vertical: sm,
-  );
+  EdgeInsets get pagePadding =>
+      EdgeInsets.symmetric(horizontal: md, vertical: sm);
 
   // 카드 패딩
   EdgeInsets get cardPadding => EdgeInsets.all(md);

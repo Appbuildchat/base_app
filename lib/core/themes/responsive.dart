@@ -203,11 +203,7 @@ extension ResponsiveContext on BuildContext {
   double get screenHeight => MediaQuery.sizeOf(this).height;
 
   /// 디바이스별 값 반환
-  T responsive<T>({
-    required T mobile,
-    T? tablet,
-    T? desktop,
-  }) {
+  T responsive<T>({required T mobile, T? tablet, T? desktop}) {
     return Responsive.value<T>(
       this,
       mobile: mobile,

@@ -79,5 +79,6 @@ class NotificationHelper {
   static bool get isEnabled => AddonRegistry.has<NotificationAddon>();
 
   /// Addon 인스턴스
-  static NotificationAddon? get instance => AddonRegistry.get<NotificationAddon>();
+  static NotificationAddon? get instance =>
+      AddonRegistry.get<NotificationAddon>();
 }
