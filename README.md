@@ -1,263 +1,404 @@
-# flutter_basic_project - Enterprise Flutter Application Template
+# App_Base - Flutter Base Project
 
-A production-ready Flutter project template designed for building enterprise-grade mobile applications. This template provides a solid foundation with best practices, proper structure, and development tools integration.
+AI 기반 앱 생성을 위한 경량화된 Flutter 템플릿 프로젝트입니다.
+PRD와 컬러셋을 입력받아 자동으로 앱을 생성하는 시스템의 기반이 됩니다.
 
-## 🚀 Quick Start
+## 주요 특징
+
+- **모듈형 아키텍처**: 기능별 Addon 시스템으로 필요한 기능만 활성화
+- **중앙 집중식 DataSource**: Remote, Local, Secure 데이터 관리 통합
+- **반응형 테마 시스템**: 디바이스별 자동 스케일링 (Mobile/Tablet/Desktop)
+- **최소 권한 원칙**: 필요한 권한만 스크립트로 추가
+- **AI 친화적 구조**: Claude Code 등 AI 도구가 인식하기 쉬운 구조
+- **Firebase BaaS**: 별도 서버 없이 Firebase로 백엔드 운영
+
+## 빠른 시작
 
 ### Prerequisites
-- Flutter SDK 3.32.4 or higher
-- Dart SDK 3.8.1 or higher
-- Node.js v22.16.0 (for Claude Code CLI)
-- NVM Checking
-- IDE with Flutter support (VS Code, Android Studio, IntelliJ)
 
-- gcloud - https://cloud.google.com/sdk/docs/install#deb
-   gcloud init
-   gcloud auth application-default login
+- Flutter SDK 3.32.4+
+- Dart SDK 3.8.1+
+- Node.js v22.16.0 (Claude Code CLI용)
+- Firebase CLI (`firebase login`)
+- FlutterFire CLI (`dart pub global activate flutterfire_cli`)
 
-- firebase login
+### 1. 새 프로젝트 생성
 
-
-### Initial Setup
-
-1. **Run the initialization script:**
-   ```bash
-   ./start.sh
-   ```
-   This script will:
-   - Verify and install development dependencies
-   - Customize the package name
-   - Configure Serena MCP server for Claude Code
-   - Set up the Flutter environment
-
-2. **Install Flutter dependencies:**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Run the application:**
-   ```bash
-   flutter run
-   ```
-
-## 📁 Project Structure
-
-```
-.
-├── lib/                    # Application source code
-│   └── main.dart          # Entry point
-├── test/                   # Unit and widget tests
-├── android/               # Android-specific configuration
-├── ios/                   # iOS-specific configuration
-├── web/                   # Web-specific configuration
-├── linux/                 # Linux desktop configuration
-├── macos/                 # macOS desktop configuration
-├── windows/               # Windows desktop configuration
-├── pubspec.yaml           # Package dependencies
-├── analysis_options.yaml  # Linting rules
-└── start.sh              # Project initialization script
+```bash
+./start.sh
 ```
 
-### Recommended Directory Structure (for scaling)
+start.sh가 자동으로:
+- 패키지 이름 변경
+- Firebase 프로젝트 생성 및 연결
+- FlutterFire 설정 (firebase_options.dart 생성)
+- GitHub 레포지토리 생성
+- colorset.json 적용
+- FSD 문서 생성
+
+### 2. 권한 설정 (선택)
+
+```bash
+# 필요한 권한만 추가
+./scripts/permissions-setup.sh --camera --photos --notifications
+
+# 옵션 보기
+./scripts/permissions-setup.sh
+```
+
+### 3. 실행
+
+```bash
+flutter run
+```
+
+## 프로젝트 구조
+
 ```
 lib/
-├── main.dart              # App entry point
-├── app/                   # Application layer
-│   ├── routes/           # Navigation and routing
-│   └── themes/           # App themes and styling
-├── core/                  # Core functionality
-│   ├── constants/        # App constants
-│   ├── errors/           # Error handling
-│   └── utils/            # Utility functions
-├── data/                  # Data layer
-│   ├── models/           # Data models
-│   ├── repositories/     # Data repositories
-│   └── services/         # External services
-├── presentation/          # Presentation layer
-│   ├── screens/          # Full-page widgets
-│   ├── widgets/          # Reusable widgets
-│   └── providers/        # State management
-└── l10n/                  # Localization files
+├── main.dart                 # 앱 진입점
+├── app_config.dart           # 기능 토글 설정
+├── firebase_options.dart     # Firebase 설정 (자동 생성)
+│
+├── core/                     # 핵심 인프라
+│   ├── datasource/          # 데이터 소스 시스템
+│   │   ├── datasource.dart  # DS 통합 진입점
+│   │   ├── remote/          # API 통신 (Dio)
+│   │   ├── local/           # 로컬 저장소 (SharedPreferences)
+│   │   └── secure/          # 보안 저장소 (FlutterSecureStorage)
+│   │
+│   ├── themes/              # 테마 시스템
+│   │   ├── app_theme.dart   # 메인 테마
+│   │   ├── color_theme.dart # 색상 정의 (JSON 로드)
+│   │   ├── app_typography.dart  # 타이포그래피
+│   │   ├── app_spacing.dart     # 간격 토큰
+│   │   ├── app_dimensions.dart  # 크기 토큰
+│   │   └── responsive.dart      # 반응형 유틸리티
+│   │
+│   ├── router/              # 라우팅 (GoRouter)
+│   ├── widgets/             # 공통 위젯
+│   └── providers/           # 상태 관리
+│
+├── addons/                  # 선택적 기능 모듈
+│   ├── addon_registry.dart  # Addon 등록/관리
+│   ├── notification/        # 푸시 알림 (FCM)
+│   ├── payment/             # 결제 (Stripe)
+│   └── media/               # 미디어 (카메라, 갤러리)
+│
+└── domain/                  # 도메인 레이어 (DDD)
+    ├── auth/                # 인증 (Email, Google, Apple)
+    ├── user/                # 사용자 관리
+    ├── settings/            # 설정
+    ├── feedback/            # 피드백
+    └── admin/               # 관리자
 ```
 
-## 🛠️ Development Commands
+## 핵심 시스템
 
-### Essential Commands
-```bash
-# Development
-flutter run                    # Run on connected device
-flutter run -d chrome         # Run on Chrome
-flutter run --release         # Run in release mode
+### 1. DataSource 시스템
 
-# Building
-flutter build apk             # Build Android APK
-flutter build ios             # Build iOS (macOS only)
-flutter build web             # Build for web
+중앙 집중식 데이터 관리 (RN의 DataSource 패턴과 유사):
 
-# Testing & Quality
-flutter test                  # Run tests
-flutter analyze               # Analyze code
-
-# Maintenance
-flutter clean                 # Clean build artifacts
-flutter pub upgrade           # Upgrade dependencies
-flutter doctor                # Check Flutter setup
-```
-
-## 🎨 Current Implementation
-
-The template includes:
-- ✅ Material Design 3 with Material You theming
-- ✅ Basic counter demo app with StatefulWidget
-- ✅ Cross-platform support (iOS, Android, Web, Desktop)
-- ✅ Flutter linting with flutter_lints
-- ✅ Hot reload support
-- ✅ Serena MCP integration for Claude Code
-
-## 📦 Dependencies
-
-### Production Dependencies
-- `flutter` - Core Flutter SDK
-- `cupertino_icons: ^1.0.8` - iOS-style icons
-
-### Development Dependencies
-- `flutter_test` - Testing framework
-- `flutter_lints: ^5.0.0` - Linting rules
-
-## 🏗️ Architecture Guidelines
-
-### State Management Options
-The template uses basic StatefulWidget. For production apps, consider:
-- **Provider** - Simple and Flutter-recommended
-- **Riverpod** - Provider with compile-time safety
-- **Bloc** - For complex business logic
-- **GetX** - Full-featured with routing and dependencies
-
-### Recommended Patterns
-1. **Separation of Concerns** - Keep UI, business logic, and data separate
-2. **Dependency Injection** - Use GetIt or Provider for DI
-3. **Repository Pattern** - Abstract data sources
-4. **Clean Architecture** - Domain, Data, and Presentation layers
-
-## 🧪 Testing Strategy
-
-### Unit Tests
 ```dart
-test/
-├── unit/           # Business logic tests
-├── widget/         # Widget tests
-└── integration/    # Integration tests
+// 초기화 (main.dart에서)
+await DS.initialize(baseUrl: 'https://api.example.com');
+
+// Remote - API 호출
+final response = await DS.remote.get('/users');
+final result = await DS.remote.post('/users', data: {'name': 'Kim'});
+
+// Local - 로컬 저장소 (캐시)
+await DS.local.set('user_settings', settingsJson);
+final settings = await DS.local.get<Map>('user_settings');
+await DS.local.setWithExpiry('cache_key', data, Duration(hours: 1));
+
+// Secure - 보안 저장소 (토큰)
+await DS.secure.setToken('access_token_value');
+final token = await DS.secure.getToken();
+await DS.secure.setRefreshToken('refresh_token_value');
+
+// 전체 초기화 (로그아웃 시)
+await DS.clearAll();
 ```
 
-### Running Tests
-```bash
-flutter test                          # All tests
-flutter test test/unit/              # Unit tests only
-flutter test --coverage              # With coverage
-```
+### 2. Addon 시스템
 
-## 🔧 Configuration
+필요한 기능만 활성화하는 플러그인 구조:
 
-### Environment Configuration
-Create `lib/config/` directory for environment-specific settings:
 ```dart
+// app_config.dart에서 토글
 class AppConfig {
-  static const String apiUrl = String.fromEnvironment(
-    'API_URL',
-    defaultValue: 'https://api.example.com',
+  static const bool enableNotification = true;
+  static const bool enablePayment = false;
+  static const bool enableMedia = true;
+}
+
+// main.dart에서 조건부 초기화
+if (AppConfig.enableNotification) {
+  AddonRegistry.register(NotificationAddon());
+}
+if (AppConfig.enablePayment) {
+  AddonRegistry.register(PaymentAddon());
+}
+
+// 사용 시 안전하게 접근
+if (NotificationHelper.isEnabled) {
+  await NotificationHelper.instance?.sendNotification(
+    title: 'Hello',
+    body: 'World',
   );
 }
 ```
 
-Run with environment variables:
-```bash
-flutter run --dart-define=API_URL=https://staging.api.com
+### 3. 반응형 테마
+
+디바이스별 자동 스케일링:
+
+```dart
+// Breakpoints
+// Mobile: < 600px
+// Tablet: 600px - 1024px
+// Desktop: > 1024px
+
+// Context extension 사용
+if (context.isMobile) { /* 모바일 레이아웃 */ }
+if (context.isTablet) { /* 태블릿 레이아웃 */ }
+if (context.isDesktop) { /* 데스크톱 레이아웃 */ }
+
+// 반응형 값 (디바이스별 다른 값)
+final padding = context.responsive(
+  mobile: 16.0,
+  tablet: 24.0,
+  desktop: 32.0,
+);
+
+// 또는 Responsive 유틸리티
+final columns = Responsive.value<int>(
+  context,
+  mobile: 1,
+  tablet: 2,
+  desktop: 3,
+);
+
+// 반응형 간격 클래스
+final spacing = ResponsiveSpacing(context);
+Container(
+  padding: spacing.pagePadding,  // 자동 스케일
+  margin: spacing.cardPadding,
+)
 ```
 
-## 🚢 Deployment
+### 4. 테마 토큰
 
-### Android
-1. Update `android/app/build.gradle` with signing config
-2. Build: `flutter build appbundle`
-3. Upload to Google Play Console
+일관된 디자인 시스템:
 
-### iOS
-1. Open in Xcode: `open ios/Runner.xcworkspace`
-2. Configure signing & capabilities
-3. Build: `flutter build ios`
-4. Upload via App Store Connect
+```dart
+// 색상 (colorset.json에서 로드)
+AppColors.primary       // 메인 색상
+AppColors.secondary     // 보조 색상
+AppColors.background    // 배경색
+AppColors.text          // 텍스트 색상
+AppColors.accent        // 강조 색상
 
-### Web
-1. Build: `flutter build web`
-2. Deploy `build/web/` directory to hosting service
+// 타이포그래피
+AppTypography.headline1    // 32px Bold
+AppTypography.headline2    // 24px Bold
+AppTypography.bodyLarge    // 16px Regular
+AppTypography.bodyRegular  // 14px Regular
+AppTypography.caption      // 12px Regular
 
-## 🤝 Development Workflow
+// 간격 토큰
+AppSpacing.xs    // 4
+AppSpacing.s     // 8
+AppSpacing.m     // 12
+AppSpacing.md    // 16
+AppSpacing.lg    // 24
+AppSpacing.xl    // 32
+AppSpacing.xxl   // 40
 
-### With Claude Code & Serena MCP
-1. Start Claude Code: `claude code .`
-2. Serena MCP provides intelligent code assistance
-3. Use symbolic code navigation and editing
-4. Automatic project understanding and memory
+// 위젯 간격 (SizedBox)
+AppSpacing.v16   // SizedBox(height: 16)
+AppSpacing.h8    // SizedBox(width: 8)
 
-### Git Workflow
-```bash
-git checkout -b feature/new-feature
-# Make changes
-flutter analyze && flutter test
-git add .
-git commit -m "feat: add new feature"
-git push origin feature/new-feature
+// 크기 토큰
+AppDimensions.buttonHeight   // 48
+AppDimensions.iconS          // 16
+AppDimensions.iconM          // 24
+AppDimensions.iconL          // 32
 ```
 
-## 📚 Resources
+## 스크립트
 
-### Flutter Documentation
-- [Flutter Documentation](https://docs.flutter.dev/)
-- [Flutter Cookbook](https://docs.flutter.dev/cookbook)
-- [Widget Catalog](https://docs.flutter.dev/ui/widgets)
+| 스크립트 | 설명 |
+|---------|------|
+| `start.sh` | 새 프로젝트 초기화 (패키지명, Firebase, GitHub) |
+| `scripts/permissions-setup.sh` | 플랫폼 권한 추가 |
+| `scripts/flutterfire-setup.sh` | Firebase 연동 설정 |
+| `scripts/firebase-setup.sh` | Firebase 프로젝트 생성 |
+| `scripts/github-setup.sh` | GitHub 레포지토리 생성 |
 
-### Architecture & Patterns
-- [Flutter Architecture Samples](https://fluttersamples.com/)
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [BLoC Pattern](https://bloclibrary.dev/)
-
-### Tools & Extensions
-- [Flutter DevTools](https://docs.flutter.dev/tools/devtools)
-- [VS Code Flutter Extension](https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter)
-- [Android Studio Flutter Plugin](https://plugins.jetbrains.com/plugin/9212-flutter)
-
-## 🎯 Next Steps for Your Project
-
-1. **Choose State Management** - Select and implement state management solution
-2. **Setup Navigation** - Implement routing (go_router recommended)
-3. **Add Authentication** - Implement user authentication
-4. **Configure CI/CD** - Setup GitHub Actions or other CI/CD
-5. **Implement Design System** - Create consistent UI components
-6. **Add Analytics** - Integrate analytics (Firebase, Mixpanel)
-7. **Setup Error Tracking** - Add Sentry or similar
-8. **Internationalization** - Add multi-language support
-
-
-## App Context
-
-To create a app-context.yml file, you must run claude code on the app lib folder using custom style and command
+### permissions-setup.sh 옵션
 
 ```bash
-claude
-
-/output-styles
+--camera        # 카메라 접근
+--photos        # 사진 라이브러리 읽기/쓰기
+--notifications # 푸시 알림
+--location      # GPS 위치
+--tracking      # 앱 추적 투명성 (iOS ATT)
+--google-signin # Google 로그인 URL 스킴
+--all           # 전체 권한
 ```
 
-Select App Context
+## Firebase 설정
+
+### 플레이스홀더 파일
+
+프로젝트에는 빌드를 위한 플레이스홀더가 포함되어 있습니다:
+
+| 파일 | 플랫폼 | 설명 |
+|------|--------|------|
+| `lib/firebase_options.dart` | Flutter | Firebase 옵션 |
+| `ios/Runner/GoogleService-Info.plist` | iOS | iOS 설정 |
+| `android/app/google-services.json` | Android | Android 설정 |
+
+`start.sh` 또는 `flutterfire configure` 실행 시 실제 값으로 교체됩니다.
+
+### 지원 Firebase 서비스
+
+- Firebase Auth (Email, Google, Apple 로그인)
+- Cloud Firestore (NoSQL 데이터베이스)
+- Firebase Storage (파일 저장소)
+- Firebase Messaging (푸시 알림)
+- Cloud Functions (서버리스 함수)
+
+## 플랫폼 설정
+
+### iOS (Info.plist)
+
+기본 구성: 최소 필수 항목만 포함
+- Bundle 정보
+- UI 설정 (Orientation, Launch Screen)
+
+권한은 `permissions-setup.sh`로 필요시 추가.
+
+### Android (AndroidManifest.xml)
+
+기본 구성:
+- `INTERNET` - 네트워크 접근
+- `ACCESS_NETWORK_STATE` - 네트워크 상태 확인
+
+추가 권한은 `permissions-setup.sh`로 필요시 추가.
+
+## 개발 가이드
+
+### 새 도메인 추가
+
+```
+lib/domain/my_feature/
+├── entities/           # 데이터 모델
+│   └── my_entity.dart
+├── functions/          # 비즈니스 로직
+│   └── my_function.dart
+└── presentation/       # UI
+    ├── screens/
+    └── widgets/
+```
+
+### 새 Addon 생성
+
+```dart
+// lib/addons/my_addon/my_addon.dart
+class MyAddon extends Addon {
+  @override
+  String get name => 'my_addon';
+
+  @override
+  Future<void> initialize() async {
+    // 초기화 로직
+  }
+
+  @override
+  Future<void> dispose() async {
+    // 정리 로직
+  }
+}
+
+// Helper 클래스 (선택)
+class MyAddonHelper {
+  static bool get isEnabled => AddonRegistry.has<MyAddon>();
+  static MyAddon? get instance => AddonRegistry.get<MyAddon>();
+}
+```
+
+### API 연동
+
+```dart
+// GET 요청
+final users = await DS.remote.get<List>('/users');
+
+// POST 요청
+final newUser = await DS.remote.post<Map>(
+  '/users',
+  data: {'name': 'Kim', 'email': 'kim@example.com'},
+);
+
+// 에러 처리
+try {
+  final result = await DS.remote.get('/protected');
+} on DioException catch (e) {
+  if (e.response?.statusCode == 401) {
+    // 토큰 만료 처리
+  }
+}
+```
+
+## 명령어
 
 ```bash
-/app-context ./lib
+# 개발
+flutter run                    # 실행
+flutter run -d chrome         # 웹에서 실행
+flutter run --release         # 릴리즈 모드
+
+# 빌드
+flutter build apk             # Android APK
+flutter build ios             # iOS
+flutter build web             # 웹
+
+# 품질 관리
+flutter analyze               # 코드 분석
+flutter test                  # 테스트 실행
+
+# 유지보수
+flutter clean                 # 빌드 캐시 정리
+flutter pub get               # 의존성 설치
+flutter pub upgrade           # 의존성 업그레이드
 ```
 
-A app-context.yml file will be created in the directory root.
-To change the yaml structure or details, update the example output in the @app-context.md file.
+## 주요 의존성
 
+### Core
+- `firebase_core`, `firebase_auth`, `cloud_firestore`, `firebase_storage`
+- `go_router` - 라우팅
+- `dio` - HTTP 클라이언트
+- `shared_preferences` - 로컬 저장소
+- `flutter_secure_storage` - 보안 저장소
 
-## 📄 License
+### UI
+- `flutter_animate` - 애니메이션
+- `google_fonts` - 폰트
 
-This template is provided as-is for use in building Flutter applications.
+### Optional (Addon)
+- `firebase_messaging` - 푸시 알림
+- `flutter_stripe` - 결제
+- `image_picker` - 이미지 선택
+
+## 문서
+
+- `STRUCTURE.md` - AI용 프로젝트 구조 문서
+- `docs/ui_guideline.md` - UI 가이드라인
+- `docs/datasource/` - DataSource 패턴 문서
+
+## 라이선스
+
+Private - AppBuildChat
