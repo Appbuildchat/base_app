@@ -1,20 +1,80 @@
 import 'package:flutter/material.dart';
+import 'responsive.dart';
 
 /// Application spacing constants
 /// Centralizes all spacing values for consistent layout throughout the app
+///
+/// ## 사용법
+///
+/// ### 정적 값 (기존 방식)
+/// ```dart
+/// Padding(padding: EdgeInsets.all(AppSpacing.md))
+/// SizedBox(height: AppSpacing.sm)
+/// ```
+///
+/// ### 반응형 값 (NEW)
+/// ```dart
+/// // 디바이스별 다른 간격
+/// Padding(padding: EdgeInsets.all(AppSpacing.responsive(context).md))
+///
+/// // 또는 직접 지정
+/// Padding(padding: EdgeInsets.all(
+///   AppSpacing.of(context, mobile: 16, tablet: 24, desktop: 32)
+/// ))
+/// ```
 class AppSpacing {
   AppSpacing._(); // Private constructor to prevent instantiation
 
-  // Base spacing values
+  // ============================================================
+  // Base spacing values (정적)
+  // ============================================================
   static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 16.0;
+  static const double lg = 24.0;
+  static const double xl = 32.0;
+  static const double xxl = 40.0;
+  static const double xxxl = 48.0;
+
+  // Legacy aliases (하위 호환성)
   static const double s = 8.0;
   static const double m = 12.0;
   static const double l = 16.0;
-  static const double xl = 20.0;
-  static const double xxl = 24.0;
-  static const double xxxl = 32.0;
   static const double xxxxl = 40.0;
   static const double xxxxxl = 48.0;
+
+  // ============================================================
+  // Responsive spacing (반응형)
+  // ============================================================
+
+  /// 반응형 간격 반환
+  ///
+  /// ```dart
+  /// final spacing = AppSpacing.of(context, mobile: 16, tablet: 24, desktop: 32);
+  /// ```
+  static double of(
+    BuildContext context, {
+    required double mobile,
+    double? tablet,
+    double? desktop,
+  }) {
+    return Responsive.value<double>(
+      context,
+      mobile: mobile,
+      tablet: tablet,
+      desktop: desktop,
+    );
+  }
+
+  /// 반응형 간격 객체 반환
+  ///
+  /// ```dart
+  /// final sp = AppSpacing.responsive(context);
+  /// Padding(padding: EdgeInsets.all(sp.md)) // 디바이스별 자동 조정
+  /// ```
+  static ResponsiveSpacing responsive(BuildContext context) {
+    return ResponsiveSpacing(context);
+  }
 
   // Vertical spacing helpers
   static const SizedBox v4 = SizedBox(height: xs);
@@ -112,4 +172,42 @@ class AppSpacing {
     horizontal: l,
     vertical: m,
   );
+}
+
+/// 반응형 간격 클래스
+///
+/// 디바이스 타입에 따라 자동으로 간격을 조정합니다.
+///
+/// ```dart
+/// final sp = AppSpacing.responsive(context);
+/// Padding(padding: EdgeInsets.all(sp.md))
+/// ```
+class ResponsiveSpacing {
+  final BuildContext _context;
+
+  ResponsiveSpacing(this._context);
+
+  // 반응형 간격 값들
+  // mobile → tablet → desktop 순으로 증가
+  double get xs => Responsive.value(_context, mobile: 4, tablet: 6, desktop: 8);
+  double get sm => Responsive.value(_context, mobile: 8, tablet: 12, desktop: 16);
+  double get md => Responsive.value(_context, mobile: 16, tablet: 20, desktop: 24);
+  double get lg => Responsive.value(_context, mobile: 24, tablet: 32, desktop: 40);
+  double get xl => Responsive.value(_context, mobile: 32, tablet: 48, desktop: 64);
+  double get xxl => Responsive.value(_context, mobile: 40, tablet: 56, desktop: 72);
+
+  // 페이지 패딩
+  EdgeInsets get pagePadding => EdgeInsets.symmetric(
+    horizontal: md,
+    vertical: sm,
+  );
+
+  // 카드 패딩
+  EdgeInsets get cardPadding => EdgeInsets.all(md);
+
+  // 섹션 간격
+  double get sectionGap => lg;
+
+  // 아이템 간격
+  double get itemGap => sm;
 }

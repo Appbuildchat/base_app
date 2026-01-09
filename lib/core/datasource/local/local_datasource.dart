@@ -37,7 +37,9 @@ class LocalDataSource {
 
   SharedPreferences get _storage {
     if (_prefs == null) {
-      throw StateError('LocalDataSource not initialized. Call initialize() first.');
+      throw StateError(
+        'LocalDataSource not initialized. Call initialize() first.',
+      );
     }
     return _prefs!;
   }

@@ -34,53 +34,57 @@ class RemoteDataSource {
 
   /// 초기화
   void initialize() {
-    _dio = Dio(BaseOptions(
-      baseUrl: AppConfig.apiBaseUrl,
-      connectTimeout: Duration(seconds: AppConfig.apiTimeout),
-      receiveTimeout: Duration(seconds: AppConfig.apiTimeout),
-      headers: {'Content-Type': 'application/json'},
-    ));
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: AppConfig.apiBaseUrl,
+        connectTimeout: Duration(seconds: AppConfig.apiTimeout),
+        receiveTimeout: Duration(seconds: AppConfig.apiTimeout),
+        headers: {'Content-Type': 'application/json'},
+      ),
+    );
 
     _setupInterceptors();
   }
 
   void _setupInterceptors() {
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        // 인증이 필요한 요청에 토큰 자동 추가
-        if (options.extra['requiresAuth'] != false) {
-          final token = await _secure.getAccessToken();
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // 인증이 필요한 요청에 토큰 자동 추가
+          if (options.extra['requiresAuth'] != false) {
+            final token = await _secure.getAccessToken();
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
           }
-        }
 
-        if (AppConfig.logApiCalls) {
-          _logRequest(options);
-        }
+          if (AppConfig.logApiCalls) {
+            _logRequest(options);
+          }
 
-        handler.next(options);
-      },
-      onResponse: (response, handler) {
-        if (AppConfig.logApiCalls) {
-          _logResponse(response);
-        }
-        handler.next(response);
-      },
-      onError: (error, handler) async {
-        if (AppConfig.logApiCalls) {
-          _logError(error);
-        }
+          handler.next(options);
+        },
+        onResponse: (response, handler) {
+          if (AppConfig.logApiCalls) {
+            _logResponse(response);
+          }
+          handler.next(response);
+        },
+        onError: (error, handler) async {
+          if (AppConfig.logApiCalls) {
+            _logError(error);
+          }
 
-        // 401 에러 시 토큰 자동 갱신
-        if (error.response?.statusCode == 401) {
-          final success = await _handleTokenRefresh(error, handler);
-          if (success) return;
-        }
+          // 401 에러 시 토큰 자동 갱신
+          if (error.response?.statusCode == 401) {
+            final success = await _handleTokenRefresh(error, handler);
+            if (success) return;
+          }
 
-        handler.next(error);
-      },
-    ));
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   /// 토큰 갱신 처리

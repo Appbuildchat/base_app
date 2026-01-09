@@ -34,9 +34,7 @@ class SecureDataSource {
   Future<void> initialize() async {
     _storage = const FlutterSecureStorage(
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
-      iOptions: IOSOptions(
-        accessibility: KeychainAccessibility.first_unlock,
-      ),
+      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     );
   }
 
@@ -97,11 +95,13 @@ class SecureDataSource {
 
     try {
       // RemoteDataSource와 순환 참조 방지를 위해 직접 Dio 사용
-      final dio = Dio(BaseOptions(
-        baseUrl: AppConfig.apiBaseUrl,
-        connectTimeout: Duration(seconds: AppConfig.apiTimeout),
-        receiveTimeout: Duration(seconds: AppConfig.apiTimeout),
-      ));
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: AppConfig.apiBaseUrl,
+          connectTimeout: Duration(seconds: AppConfig.apiTimeout),
+          receiveTimeout: Duration(seconds: AppConfig.apiTimeout),
+        ),
+      );
 
       final response = await dio.post(
         '/auth/refresh',
