@@ -395,12 +395,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onTap: () => context.push('/settings/change-nickname'),
         ),
         _buildSettingTile(
-          icon: Icons.phone_rounded,
-          title: 'Change Phone Number',
-          subtitle: 'Update your contact number',
-          onTap: () => context.push('/settings/change-phone'),
-        ),
-        _buildSettingTile(
           icon: Icons.description_rounded,
           title: 'Change Bio',
           subtitle: 'Tell others about yourself',

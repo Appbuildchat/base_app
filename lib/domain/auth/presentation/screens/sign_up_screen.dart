@@ -13,11 +13,9 @@
 // =============================================================================
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 
 import '../../../../core/themes/app_theme.dart';
 import '../../../../core/validators.dart';
@@ -26,7 +24,6 @@ import '../../../../core/themes/color_theme.dart';
 import '../../../../core/themes/app_dimensions.dart';
 import '../../../../core/themes/app_spacing.dart';
 import '../../../../core/themes/app_font_weights.dart';
-import '../../../../core/themes/app_shadows.dart';
 import '../../../../core/widgets/modern_text_field.dart';
 import '../../../../core/widgets/modern_button.dart';
 import '../../../../core/widgets/modern_dropdown.dart';
@@ -51,7 +48,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _nicknameController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -62,9 +58,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? _googleUid;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
-  String _selectedCountryCode = '+82'; // Default to Korea
-  bool _isPhoneFocused = false;
-  final FocusNode _phoneFocusNode = FocusNode();
 
   // Email checking variables
   bool _isCheckingEmail = false;
@@ -75,11 +68,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void initState() {
     super.initState();
     _initializeGoogleData();
-    _phoneFocusNode.addListener(() {
-      setState(() {
-        _isPhoneFocused = _phoneFocusNode.hasFocus;
-      });
-    });
   }
 
   void _initializeGoogleData() {
@@ -114,7 +102,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
         'nickname': _nicknameController.text.trim(),
-        'phoneNumber': '$_selectedCountryCode${_phoneController.text.trim()}',
         'email': _emailController.text.trim(),
         'password': _passwordController.text,
         'role': _selectedRole!,
@@ -265,21 +252,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return null;
   }
 
-  String? _validatePhone(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your phone number';
-    }
-
-    // Remove any non-digit characters for validation
-    final digitsOnly = value.trim().replaceAll(RegExp(r'[^\d]'), '');
-
-    // Basic phone number length validation (adjust as needed)
-    if (digitsOnly.length < 8 || digitsOnly.length > 15) {
-      return 'Phone number must be 8-15 digits';
-    }
-    return null;
-  }
-
   // ============================================================================
   // UI Construction
   // ============================================================================
@@ -406,158 +378,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             )
                             .animate(delay: 500.ms)
-                            .fadeIn(duration: 600.ms)
-                            .slideY(begin: 0.2, end: 0, duration: 600.ms),
-
-                        AppSpacing.v20,
-
-                        // Phone number input with country code - using ModernTextField structure
-                        Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: AppDimensions.borderRadiusL,
-                                    boxShadow: _isPhoneFocused
-                                        ? AppShadows.primaryShadow(
-                                            AppColors.primary,
-                                          )
-                                        : AppShadows.button,
-                                  ),
-                                  child: TextFormField(
-                                    controller: _phoneController,
-                                    focusNode: _phoneFocusNode,
-                                    validator: _validatePhone,
-                                    keyboardType: TextInputType.phone,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                    ],
-                                    style: TextStyle(
-                                      fontSize: AppDimensions.iconS,
-                                      fontWeight: AppFontWeights.medium,
-                                      color: AppColors.text,
-                                    ),
-                                    decoration: InputDecoration(
-                                      labelText: 'Phone Number',
-                                      hintText: 'Enter your phone number',
-                                      prefixIcon: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          AppSpacing.h12,
-                                          Icon(
-                                            Icons.phone_outlined,
-                                            color: AppColors.secondary,
-                                            size: AppDimensions.iconM,
-                                          ),
-                                          AppSpacing.h4,
-                                          CountryCodePicker(
-                                            onChanged: (countryCode) {
-                                              setState(() {
-                                                _selectedCountryCode =
-                                                    countryCode.dialCode!;
-                                              });
-                                            },
-                                            initialSelection: 'KR',
-                                            favorite: const [
-                                              '+82',
-                                              'KR',
-                                              '+1',
-                                              'US',
-                                            ],
-                                            showCountryOnly: false,
-                                            showOnlyCountryWhenClosed: false,
-                                            alignLeft: false,
-                                            textStyle: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: AppFontWeights.medium,
-                                              color: AppColors.text,
-                                            ),
-                                            dialogTextStyle:
-                                                AppTypography.bodyRegular,
-                                            searchStyle:
-                                                AppTypography.bodyRegular,
-                                            searchDecoration:
-                                                const InputDecoration(
-                                                  hintText: 'Search country',
-                                                ),
-                                            dialogBackgroundColor:
-                                                AppCommonColors.white,
-                                            barrierColor: AppCommonColors.black,
-                                            backgroundColor: Colors.transparent,
-                                            boxDecoration:
-                                                const BoxDecoration(),
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 4,
-                                              vertical: 8,
-                                            ),
-                                          ),
-                                          Container(
-                                            width:
-                                                AppDimensions.dividerThickness,
-                                            height: AppDimensions.iconM,
-                                            color: AppColors.secondary
-                                                .withValues(alpha: 0.3),
-                                          ),
-                                          AppSpacing.h8,
-                                        ],
-                                      ),
-                                      labelStyle: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: AppFontWeights.medium,
-                                        color: _isPhoneFocused
-                                            ? AppColors.primary
-                                            : AppColors.secondary,
-                                      ),
-                                      hintStyle: const TextStyle(
-                                        fontSize: 10,
-                                        color: AppCommonColors.grey400,
-                                      ),
-                                      filled: true,
-                                      fillColor: _isPhoneFocused
-                                          ? AppColors.background
-                                          : AppCommonColors.grey50,
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            AppDimensions.borderRadiusL,
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppDimensions.borderRadiusL,
-                                        borderSide: BorderSide(
-                                          color: AppColors.primary,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppDimensions.borderRadiusL,
-                                        borderSide: BorderSide(
-                                          color: AppColors.accent,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            AppDimensions.borderRadiusL,
-                                        borderSide: BorderSide(
-                                          color: AppColors.accent,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      contentPadding:
-                                          AppSpacing.textFieldPadding,
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.auto,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                            .animate()
-                            .fadeIn(duration: 400.ms)
-                            .slideX(begin: -0.1, end: 0, duration: 400.ms)
-                            .animate(delay: 550.ms)
                             .fadeIn(duration: 600.ms)
                             .slideY(begin: 0.2, end: 0, duration: 600.ms),
 
@@ -851,8 +671,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _nicknameController.dispose();
-    _phoneController.dispose();
-    _phoneFocusNode.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();

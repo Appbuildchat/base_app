@@ -15,7 +15,6 @@ import '../../domain/settings/presentation/screens/change_password_screen.dart';
 import '../../domain/settings/presentation/screens/change_username_screen.dart';
 import '../../domain/settings/presentation/screens/change_bio_screen.dart';
 import '../../domain/settings/presentation/screens/change_nickname_screen.dart';
-import '../../domain/settings/presentation/screens/change_phone_screen.dart';
 import '../../domain/feedback/presentation/screens/feedback_screen.dart';
 import '../../domain/admin/presentation/screens/feedback_list_screen.dart';
 import 'app_router.dart';
@@ -172,16 +171,6 @@ class GeneralRoutes {
       path: '/settings/change-nickname',
       pageBuilder: (context, state) => CustomPageTransition.slideTransition(
         const ChangeNicknameScreen(),
-        state,
-        begin: const Offset(1.0, 0.0),
-      ),
-    ),
-
-    // Change Phone Screen
-    GoRoute(
-      path: '/settings/change-phone',
-      pageBuilder: (context, state) => CustomPageTransition.slideTransition(
-        const ChangePhoneScreen(),
         state,
         begin: const Offset(1.0, 0.0),
       ),

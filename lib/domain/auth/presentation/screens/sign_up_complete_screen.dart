@@ -102,7 +102,6 @@ class _SignUpCompleteScreenState extends State<SignUpCompleteScreen> {
     final lastName = widget.signUpData['lastName'] as String;
     final role = widget.signUpData['role'] as Role;
     final nickname = widget.signUpData['nickname'] as String?;
-    final phoneNumber = widget.signUpData['phoneNumber'] as String?;
 
     // Perform email sign up
     await signUpWithEmail(
@@ -112,7 +111,6 @@ class _SignUpCompleteScreenState extends State<SignUpCompleteScreen> {
       lastName: lastName,
       role: role,
       nickname: nickname,
-      phoneNumber: phoneNumber,
     );
   }
 
@@ -150,7 +148,6 @@ class _SignUpCompleteScreenState extends State<SignUpCompleteScreen> {
     final lastName = widget.signUpData['lastName'] as String;
     final role = widget.signUpData['role'] as Role;
     final nickname = widget.signUpData['nickname'] as String?;
-    final phoneNumber = widget.signUpData['phoneNumber'] as String?;
     final profileImageUrl = widget.signUpData['profileImageUrl'] as String?;
 
     final firestore = FirebaseFirestore.instance;
@@ -199,7 +196,6 @@ class _SignUpCompleteScreenState extends State<SignUpCompleteScreen> {
       bio: '',
       imageUrl: profileImageUrl ?? '',
       nickname: nickname,
-      phoneNumber: phoneNumber,
       blockedUsers: const [],
       blockedPosts: const [],
       fcmToken: fcmToken,

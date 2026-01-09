@@ -33,7 +33,6 @@ Future<Result<UserEntity>> signUpWithEmail({
   String? bio,
   String? profileImageUrl,
   String? nickname,
-  String? phoneNumber,
 }) async {
   debugPrint(
     '[SIGN UP] Starting: email=$email, firstName=$firstName, lastName=$lastName',
@@ -201,7 +200,6 @@ Future<Result<UserEntity>> signUpWithEmail({
     bio: bio ?? '',
     imageUrl: profileImageUrl ?? '',
     nickname: nickname,
-    phoneNumber: phoneNumber,
     blockedUsers: const [],
     blockedPosts: const [],
     fcmToken: fcmToken,

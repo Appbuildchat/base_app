@@ -212,8 +212,6 @@ Future<Result<Map<String, dynamic>>> getUserActivityStats({
       'lastUpdate': user.updatedAt,
       'hasProfileImage': user.imageUrl != null && user.imageUrl!.isNotEmpty,
       'hasNickname': user.nickname != null && user.nickname!.isNotEmpty,
-      'hasPhoneNumber':
-          user.phoneNumber != null && user.phoneNumber!.isNotEmpty,
     };
 
     return Result.success(stats);

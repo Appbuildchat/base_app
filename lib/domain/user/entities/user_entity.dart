@@ -40,7 +40,6 @@ class UserEntity {
   final String? bio;
   final String? imageUrl;
   final String? nickname;
-  final String? phoneNumber;
   final List<String> blockedUsers;
   final List<String> blockedPosts;
   final DateTime createdAt;
@@ -59,7 +58,6 @@ class UserEntity {
     this.bio,
     this.imageUrl,
     this.nickname,
-    this.phoneNumber,
     this.blockedUsers = const [],
     this.blockedPosts = const [],
     required this.createdAt,
@@ -87,7 +85,6 @@ class UserEntity {
       bio: json['bio'],
       imageUrl: json['imageUrl'],
       nickname: json['nickname'],
-      phoneNumber: json['phoneNumber'],
       blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
       blockedPosts: List<String>.from(json['blockedPosts'] ?? []),
       createdAt: (json['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
@@ -109,7 +106,6 @@ class UserEntity {
       if (bio != null) 'bio': bio,
       if (imageUrl != null) 'imageUrl': imageUrl,
       if (nickname != null) 'nickname': nickname,
-      if (phoneNumber != null) 'phoneNumber': phoneNumber,
       'blockedUsers': blockedUsers,
       'blockedPosts': blockedPosts,
       'createdAt': Timestamp.fromDate(createdAt),
@@ -133,7 +129,6 @@ class UserEntity {
     String? bio,
     String? imageUrl,
     String? nickname,
-    String? phoneNumber,
     List<String>? blockedUsers,
     List<String>? blockedPosts,
     DateTime? createdAt,
@@ -151,7 +146,6 @@ class UserEntity {
       bio: bio ?? this.bio,
       imageUrl: imageUrl ?? this.imageUrl,
       nickname: nickname ?? this.nickname,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
       blockedUsers: blockedUsers ?? this.blockedUsers,
       blockedPosts: blockedPosts ?? this.blockedPosts,
       createdAt: createdAt ?? this.createdAt,

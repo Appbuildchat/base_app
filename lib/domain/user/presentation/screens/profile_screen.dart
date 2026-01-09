@@ -675,14 +675,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           AppSpacing.v12,
           _buildInfoCard(
-            icon: Icons.phone_outlined,
-            label: 'Phone Number',
-            value: userEntity.phoneNumber?.isNotEmpty == true
-                ? userEntity.phoneNumber!
-                : 'No phone number set',
-          ),
-          AppSpacing.v12,
-          _buildInfoCard(
             icon: Icons.email_outlined,
             label: 'Email',
             value: userEntity.email,

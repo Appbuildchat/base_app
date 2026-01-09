@@ -286,7 +286,6 @@ class _UsersScreenState extends State<UsersScreen> {
             Text('Role: ${user.role?.name ?? 'No Role'}'),
             Text('Joined: ${user.createdAt.toString().split(' ')[0]}'),
             if (user.nickname != null) Text('Nickname: ${user.nickname}'),
-            if (user.phoneNumber != null) Text('Phone: ${user.phoneNumber}'),
           ],
         ),
         actions: [
