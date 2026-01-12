@@ -36,6 +36,7 @@ import '../../functions/sign_in_with_google.dart';
 import '../../functions/sign_in_with_apple.dart';
 import '../../functions/check_user_blocked_by_email.dart';
 import '../../functions/fetch_admin_emails.dart';
+import '../../../../app_config.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -195,6 +196,22 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() => _isLoading = true);
 
     try {
+      // Test account bypass (for development without Firebase)
+      if (AppConfig.enableTestAccount) {
+        final email = _emailController.text.trim();
+        final password = _passwordController.text.trim();
+
+        if (email == AppConfig.testEmail &&
+            password == AppConfig.testPassword) {
+          _logger.d('[SIGN_IN] Test account login - bypassing Firebase');
+          await Future.delayed(const Duration(seconds: 1));
+          if (!mounted) return;
+          context.go('/home');
+          setState(() => _isLoading = false);
+          return;
+        }
+      }
+
       _logger.d('[SIGN_IN] Checking if user is blocked before login...');
 
       // First check if user is blocked by email

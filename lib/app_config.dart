@@ -82,6 +82,17 @@ class AppConfig {
   /// 애플 로그인
   static const bool enableAppleAuth = true;
 
+  /// 이메일 중복 확인 건너뛰기 (테스트용)
+  /// Firebase 미설정 시 true로 설정
+  /// ⚠️ 프로덕션에서는 반드시 false로!
+  static const bool skipEmailVerification = true;
+
+  /// 테스트 계정 (Firebase 미설정 시 사용)
+  /// ⚠️ 프로덕션에서는 반드시 false로!
+  static const bool enableTestAccount = true;
+  static const String testEmail = 'test123@abc.com';
+  static const String testPassword = 'test1234';
+
   // ============================================================
   // 🔧 Debug Configuration
   // ============================================================

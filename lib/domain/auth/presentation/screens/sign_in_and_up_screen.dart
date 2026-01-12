@@ -317,7 +317,7 @@ class _SignInAndUpScreenState extends State<SignInAndUpScreen> {
                                     ),
                                     child: ElevatedButton(
                                       onPressed: () =>
-                                          context.go('/auth/sign-in'),
+                                          context.push('/auth/sign-in'),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppCommonColors.white,
                                         foregroundColor: AppColors.primary,
@@ -354,7 +354,7 @@ class _SignInAndUpScreenState extends State<SignInAndUpScreen> {
                                   child: ModernButton(
                                     text: 'Create Account',
                                     onPressed: () =>
-                                        context.go('/auth/sign-up'),
+                                        context.push('/auth/sign-up'),
                                     type: ModernButtonType.outline,
                                     customColor: AppCommonColors.white,
                                     height: 56,

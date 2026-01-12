@@ -28,6 +28,7 @@ import '../../../../core/widgets/modern_text_field.dart';
 import '../../../../core/widgets/modern_button.dart';
 import '../../../../core/widgets/modern_dropdown.dart';
 import '../../../../core/widgets/loading_overlay.dart';
+import '../../../../app_config.dart';
 import '../../../user/entities/role.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -424,6 +425,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               return emailValidation;
                                             }
 
+                                            // Skip email availability check in test mode
+                                            if (AppConfig
+                                                .skipEmailVerification) {
+                                              return null;
+                                            }
+
                                             // Check if email has been verified
                                             final email = value?.trim() ?? '';
                                             if (_checkedEmail != email) {
@@ -454,44 +461,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           },
                                         ),
                                       ),
-                                      AppSpacing.h12,
-                                      SizedBox(
-                                        height: AppDimensions.textFieldHeight,
-                                        child: ElevatedButton(
-                                          onPressed: _isCheckingEmail
-                                              ? null
-                                              : _checkEmailAvailability,
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColors.primary,
-                                            foregroundColor:
-                                                AppCommonColors.white,
-                                            padding:
-                                                AppSpacing.paddingHorizontalL,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  AppDimensions.borderRadiusM,
+                                      // Hide Check button in test mode
+                                      if (!AppConfig.skipEmailVerification) ...[
+                                        AppSpacing.h12,
+                                        SizedBox(
+                                          height: AppDimensions.textFieldHeight,
+                                          child: ElevatedButton(
+                                            onPressed: _isCheckingEmail
+                                                ? null
+                                                : _checkEmailAvailability,
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColors.primary,
+                                              foregroundColor:
+                                                  AppCommonColors.white,
+                                              padding:
+                                                  AppSpacing.paddingHorizontalL,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    AppDimensions.borderRadiusM,
+                                              ),
                                             ),
-                                          ),
-                                          child: _isCheckingEmail
-                                              ? SizedBox(
-                                                  width: AppDimensions.iconS,
-                                                  height: AppDimensions.iconS,
-                                                  child:
-                                                      const CircularProgressIndicator(
-                                                        color: AppCommonColors
-                                                            .white,
-                                                        strokeWidth: 2,
-                                                      ),
-                                                )
-                                              : const Text(
-                                                  'Check',
-                                                  style: TextStyle(
-                                                    fontWeight:
-                                                        AppFontWeights.semiBold,
+                                            child: _isCheckingEmail
+                                                ? SizedBox(
+                                                    width: AppDimensions.iconS,
+                                                    height: AppDimensions.iconS,
+                                                    child:
+                                                        const CircularProgressIndicator(
+                                                          color: AppCommonColors
+                                                              .white,
+                                                          strokeWidth: 2,
+                                                        ),
+                                                  )
+                                                : const Text(
+                                                    'Check',
+                                                    style: TextStyle(
+                                                      fontWeight: AppFontWeights
+                                                          .semiBold,
+                                                    ),
                                                   ),
-                                                ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ],
                                   )
                                   .animate(delay: 600.ms)

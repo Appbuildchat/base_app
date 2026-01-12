@@ -114,7 +114,8 @@ class AuthGuard {
   }
 
   /// Check if the current user's email is verified
-  static bool get isEmailVerified => _safeAuth?.currentUser?.emailVerified ?? false;
+  static bool get isEmailVerified =>
+      _safeAuth?.currentUser?.emailVerified ?? false;
 
   /// Check if user has incomplete profile (for social sign-up users)
   static Future<bool> hasIncompleteProfile() async {
